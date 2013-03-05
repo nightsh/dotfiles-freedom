@@ -1,0 +1,50 @@
+alignment bottom
+background yes
+border_width 1
+cpu_avg_samples 2
+default_color DDDDDD
+default_outline_color 222222
+draw_borders no
+draw_graph_borders yes
+draw_outline no
+draw_shades no
+use_xft yes
+xftfont Sans Mono:size=8
+gap_x 5
+gap_y 0
+minimum_size 1350 6
+maximum_width 1350
+net_avg_samples 2
+no_buffers yes
+out_to_console no
+out_to_stderr no
+extra_newline no
+own_window yes
+own_window_class Conky
+own_window_type desktop
+own_window_transparent yes
+stippled_borders 0
+update_interval 1.0
+uppercase no
+use_spacer left
+show_graph_scale no
+show_graph_range no
+format_human_readable yes
+double_buffer yes
+
+color1 EEEEEE
+color2 FFFFFF
+color3 EEEEEE
+color4 C40000
+
+
+TEXT
+#${color4}${font "Droid Sans":size=48}${alignc}${exec date +%R}${font}${color}
+#
+#${color1}eth0 [${color3}${addr eth0}${color}]: ${color1}U:${color} ${upspeed eth0} ${color1} D:${color} ${downspeed eth0}     \
+#${color1}wlan0 [${color3}${addr wlan0}${color}]: ${color1}U:${color} ${upspeed wlan0} ${color1} D:${color} ${downspeed wlan0}     \
+#${alignr}${color1}Battery: [${color3}${acpiacadapter}${color1}] ${color}${battery_percent BAT0}% ${battery_bar 7,77 BAT0} [${battery_time BAT0}]    \
+#${color1} ${exec cat /etc/debian_version}    [${uptime_short}]    \
+#Updates: ${execi 900 apt-get -s -o Debug::NoLocking=true upgrade | grep -c ^'Inst ' | tr -d '\n'}
+${alignc}[${uptime_short}]    ${color1}Battery: [${color3}${acpiacadapter}${color1}] ${color}${battery_percent BAT0}% ${battery_bar 5,900 BAT0} [${battery_time BAT0}]    \
+${color1} Debian ${exec cat /etc/debian_version} (${execi 900 /home/victor/bin/debupdates.sh} updates)

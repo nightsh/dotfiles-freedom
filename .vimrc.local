@@ -1,0 +1,118 @@
+let NERDTreeQuitOnOpen=0
+map <Leader>m :set fdm=marker<cr>
+map <Leader>s :set fdm=syntax<cr>
+
+nnoremap <Leader>w :cd /srv/http<CR>
+
+
+
+"map <Leader>c :CMiniBufExplorer<cr>
+"map <Leader>u :UMiniBufExplorer<cr>
+"map <Leader>t :TMiniBufExplorer<cr>
+
+
+"let loaded_matchparen = 1
+imap <C>` AutoCloseToggle
+
+set background=dark
+"let g:neocomplcache_disable_auto_complete=1
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+set completeopt-=preview
+
+"imap <C-z> <C-x><C-u>
+"imap <Nul> <Space>
+"inoremap <C-SPACE> <C-x><C-u>
+"imap <C-@> <C-Space>
+
+"imap <C-Space> <Esc>
+"nmap <Space> i
+
+vunmap <Esc>[H
+vunmap <Esc>[F
+nunmap <Esc>[H
+nunmap <Esc>[F
+iunmap <Esc>[H
+iunmap <Esc>[F
+unmap <Esc>[H
+unmap <Esc>[F
+
+autocmd BufReadPost *
+  \ if line("'\"") > 0 && line("'\"") <= line("$") |
+  \   exe "normal g`\"" |
+  \ endif
+
+nmap <Leader>q :set spell!<CR>
+set fdm=marker
+
+"let g:miniBufExplMapWindowNavArrows = 1
+"let g:miniBufExplMapCTabSwitchBufs = 1
+
+"set background=dark
+"colorscheme xoria256
+colorscheme professional
+
+set scrolloff=6                 " Minimum number of screen lines to keep above/below the cursor
+"set winwidth=84                 " 
+set colorcolumn=81              " highlight at 80 characters
+hi ColorColumn ctermbg=233
+hi clear CursorLine
+hi CursorLine term=underline cterm=underline
+
+
+hi Search cterm=NONE ctermfg=black ctermbg=darkgray
+hi Search ctermbg=233 ctermbg=253
+hi Search guifg=black guibg=darkgray
+
+nnoremap <silent> <Leader>l :exe "let m = matchadd('WildMenu','\\%" . line('.') . "l')"<CR>
+nnoremap <silent> <Leader><CR> :call clearmatches()<CR>
+
+"let g:indent_guides_auto_colors = 0
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=233
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=232
+
+syntax sync minlines=500
+
+set matchtime=1
+"set sm!
+let b:match_debug=1
+
+"inoremap <expr><C-SPACE> neocomplcache#start_manual_complete()
+set noeb vb t_vb=
+set vb t_vb=
+
+let g:TagmaBufMgrAutoDisplay = 1
+"let g:TagmaBufMgrLastLine = 1
+let g:TagmaBufMgrMapChjkl = 0
+let g:TagmaBufMgrLocation = 'T'
+let g:TagmaBufMgrLastWindow = 1
+let g:TagmaBufMgrMapCArrow = 0
+let g:TagmaBufMgrMapCTab=1
+
+let NERDTreeShowBookmarks=0
+
+nnoremap <silent> <C-Right> <c-w>l
+nnoremap <silent> <C-Left> <c-w>h
+nnoremap <silent> <C-Up> <c-w>k
+nnoremap <silent> <C-Down> <c-w>j
+
+map <silent> <C-h> 5<C-w><
+"map <silent> <C-j> 5<C-W>+
+"map <silent> <C-k> 5<C-W>-
+map <silent> <C-l> 5<C-w>>
+
+set fdm=marker
+
+set cursorcolumn
+let g:indent_guides_auto_colors = 0
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#071D22   ctermbg=237
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#1B4049 ctermbg=233
+let g:indent_guides_start_level = 7
+"IndentGuidesDisable
+
+let g:AutoClosePairs = ""
+
+nnoremap <silent> <F3> :Grep<CR> 
+nnoremap <Leader><F1> :e ~/todo.vorg<CR>
+nnoremap <Leader><C-F1> :e ~/todo.vorg<CR>
+
+nnoremap <silent> <C-T> :TagbarToggle<CR>
