@@ -208,7 +208,7 @@ weather_t = awful.tooltip({ objects = { weatherwidget },})
 
 vicious.register(weatherwidget, vicious.widgets.weather, 
                 function (widget, args)
-                    weather_t:set_text("City: " .. args["{city}"] .."\nWind: " .. args["{windkmh}"] .. "km/h " .. args["{wind}"] .. "\nSky: " .. args["{sky}"] .. "\nHumidity: " .. args["{humid}"] .. "%")
+                    weather_t:set_text("City: " .. args["{city}"] .."\nWind: " .. args["{windkmh}"] .. " km/h " .. args["{wind}"] .. "\nSky: " .. args["{sky}"] .. "\nHumidity: " .. args["{humid}"] .. "%")
                     return args["{tempc}"] .. "°C" 
                 end, 1800, "LROP")
 
@@ -292,6 +292,12 @@ mytextclock = awful.widget.textclock({ align = "right" })
 -- Calendar widget to attach to the textclock
 require('calendar2')
 calendar2.addCalendarToWidget(mytextclock)
+
+-- Caps Lock widget
+capslockwidget = widget({ type = "textbox" })
+    lock = io.popen("~/scripts/caps_lock.sh")
+    capslockwidget.text = lock:read("*a")
+    lock:close()
 
 -- Create a systray
 mysystray = widget({ type = "systray" })
@@ -393,6 +399,11 @@ for s = 1, screen.count() do
 --        spacer,
 
         cpuwidget.widget,
+        spacer,
+        separator,
+        spacer,
+
+        capslockwidget,
         spacer,
         separator,
         spacer,
@@ -570,6 +581,18 @@ for i = 1, keynumber do
                           awful.client.toggletag(tags[client.focus.screen][i])
                       end
                   end),
+        awful.key({ }, "Num_Lock",
+                function ()
+                    lock = io.popen("~/scripts/caps_lock.sh")
+                    capslockwidget.text = lock:read("*a")
+                    lock:close()
+                end),
+        awful.key({ }, "Caps_Lock",
+                function ()
+                    lock = io.popen("~/scripts/caps_lock.sh")
+                    capslockwidget.text = lock:read("*a")
+                    lock:close()
+                end),
         --awful.key({ }, "XF86AudioRaiseVolume", function () volumecfg.up() end),
         --awful.key({ }, "XF86AudioLowerVolume", function () volumecfg.down() end),
         awful.key({ }, "XF86AudioPrev", function () awful.util.spawn("mpc prev") end),
