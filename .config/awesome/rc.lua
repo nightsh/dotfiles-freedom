@@ -39,8 +39,8 @@ run_once("/home/victor/scripts/keymap.sh")
 --- }}}
 
 -- This is used later as the default terminal and editor to run.
-terminal = "xfce4-terminal"
-browser = "dwb"
+terminal = "lxterminal"
+browser = "chromium"
 editor = "gvim"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -487,7 +487,7 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "#165", function () awful.util.spawn("claws-mail") end),
     awful.key({         "Shift"   }, "#165", function () awful.util.spawn("pcmanfm") end),
     awful.key({ },                   "#165", function () awful.util.spawn("caja") end),
-    awful.key({ "Control"         }, "Print", function () awful.util.spawn("xfce4-terminal") end),
+    awful.key({ "Control"         }, "Print", function () awful.util.spawn("lxterminal") end),
     awful.key({ modkey,           }, "Print", function () awful.util.spawn("xfce4-screenshooter") end),
     awful.key({ modkey,           }, "Delete", function () awful.util.spawn("i3lock -i /home/victor/Pictures/asciideb.png") end),
     awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
@@ -631,7 +631,6 @@ awful.rules.rules = {
     { rule = { instance = "clawsker"    }, properties = {tag = tags[1][1], floating = true}},
     --{ rule = { instance = "claws-mail"  }, properties = {tag = tags[1][1], floating = true } },
     { rule = { instance = "screenruler" }, properties = {floating = true}},
-    { rule = { instance = "xterm"       }, properties = {tag = tags[1][3]}},
     { rule = { instance = "pidgin"      }, properties = {tag = tags[1][6]}},
     { rule = { instance = "gvim"        }, properties = {tag = tags[1][2]}},
     { rule = { instance = "nitrogen"    }, properties = {floating = true}},
