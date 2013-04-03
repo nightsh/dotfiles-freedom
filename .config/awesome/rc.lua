@@ -35,13 +35,16 @@ run_once("conky -c /home/victor/backup/conky/1/.conkyrc")
 run_once("numlockx on")
 run_once("xset b off")
 run_once("xfce4-power-manager")
+run_once("synapse")
+--run_once("parcellite")
+run_once("zim")
 run_once("/home/victor/scripts/keymap.sh")
 --- }}}
 
 -- This is used later as the default terminal and editor to run.
 terminal = "lxterminal"
-browser = "chromium"
-editor = "gvim"
+browser  = "chromium"
+editor   = "gvim"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
@@ -76,7 +79,7 @@ layouts =
  tags = {
 settings = {
     { names  = { "[✉]", " \\2 ", " \\3 ", " \\4 ", " \\5 ", " \\6", " \\7 ", " \\8 ", " 9⎞" },
-      layout = { layouts[2], layouts[4], layouts[4], layouts[4], layouts[4], layouts[3], layouts[1], layouts[4], layouts[4] }
+      layout = { layouts[2], layouts[10], layouts[10], layouts[4], layouts[4], layouts[3], layouts[1], layouts[12], layouts[12] }
     },
     {  names = { "1-Sys", "2-Web", "3-Float", "4-Sys", "5-IRC", "6-Music", "7-Media", "8-Sys", "9-SSH" },
       layout = { layouts[7], layouts[2], layouts[1], layouts[4], layouts[4], layouts[2], layouts[4], layouts[12], layouts[4] }
@@ -503,12 +506,25 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incnmaster(-1)      end),
     awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1)         end),
     awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1)         end),
+
     awful.key({ modkey,           }, "space", function () awful.layout.inc(layouts,  1) end),
     awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(layouts, -1) end),
+    awful.key({ modkey            }, "F1",    function () awful.layout.set(awful.layout.suit.floating) end),
+    awful.key({ modkey            }, "F2",    function () awful.layout.set(awful.layout.suit.tile) end),
+    awful.key({ modkey            }, "F3",    function () awful.layout.set(awful.layout.suit.tile.left) end),
+    awful.key({ modkey            }, "F4",    function () awful.layout.set(awful.layout.suit.tile.bottom) end),
+    awful.key({ modkey            }, "F5",    function () awful.layout.set(awful.layout.suit.tile.top) end),
+    awful.key({ modkey            }, "F6",    function () awful.layout.set(awful.layout.suit.fair) end),
+    awful.key({ modkey            }, "F7",    function () awful.layout.set(awful.layout.suit.fair.horizontal) end),
+    awful.key({ modkey            }, "F8",    function () awful.layout.set(awful.layout.suit.spiral) end),
+    awful.key({ modkey            }, "F9",    function () awful.layout.set(awful.layout.suit.spiral.dwindle) end),
+    awful.key({ modkey            }, "F10",   function () awful.layout.set(awful.layout.suit.max) end),
+    awful.key({ modkey            }, "F11",   function () awful.layout.set(awful.layout.suit.max.fullscreen) end),
+    awful.key({ modkey            }, "F12",   function () awful.layout.set(awful.layout.suit.magnifier) end),
 
     -- Prompt
-    awful.key({ modkey,           }, "r", function () awful.util.spawn("dmenu_run -p Run: -fn Droid\\ Mono-11 -nb black -nf lightblue") end),
-    --awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
+    --awful.key({ modkey,           }, "r", function () awful.util.spawn("dmenu_run -p Run: -fn Droid\\ Mono-11 -nb black -nf lightblue") end),
+    awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
 
     awful.key({ modkey }, "x",
               function ()
@@ -595,9 +611,9 @@ for i = 1, keynumber do
                 end),
         --awful.key({ }, "XF86AudioRaiseVolume", function () volumecfg.up() end),
         --awful.key({ }, "XF86AudioLowerVolume", function () volumecfg.down() end),
-        awful.key({ }, "XF86AudioPrev", function () awful.util.spawn("mpc prev") end),
-        awful.key({ }, "XF86AudioPlay", function () awful.util.spawn("mpc pause") end),
-        awful.key({ }, "XF86AudioNext", function () awful.util.spawn("mpc next") end),
+        --awful.key({ }, "XF86AudioPrev", function () awful.util.spawn("mpc prev") end),
+        --awful.key({ }, "XF86AudioPlay", function () awful.util.spawn("mpc pause") end),
+        --awful.key({ }, "XF86AudioNext", function () awful.util.spawn("mpc next") end),
         awful.key({ }, "XF86AudioMute", function () volumecfg.toggle() end))
 
 end
@@ -629,14 +645,15 @@ awful.rules.rules = {
     { rule = { instance = "eog"         }, properties = {floating = true}},
     { rule = { instance = "rhythmbox"   }, properties = {floating = true}},
     { rule = { instance = "clawsker"    }, properties = {tag = tags[1][1], floating = true}},
-    --{ rule = { instance = "claws-mail"  }, properties = {tag = tags[1][1], floating = true } },
+    { rule = { instance = "claws-mail"  }, properties = {tag = tags[1][1]}},
     { rule = { instance = "screenruler" }, properties = {floating = true}},
     { rule = { instance = "pidgin"      }, properties = {tag = tags[1][6]}},
     { rule = { instance = "gvim"        }, properties = {tag = tags[1][2]}},
     { rule = { instance = "nitrogen"    }, properties = {floating = true}},
     { rule = { instance = "dwb"         }, properties = {floating = true}},
     { rule = { instance = "terra"       }, properties = {floating = true}},
-    { rule = { class    = "Pidgin"      }, properties = {tag = tags[1][6]}}
+    { rule = { class    = "Pidgin"      }, properties = {tag = tags[1][6]}},
+    { rule = { instance = "zim"         }, properties = {tag = tags[1][9]}}
 }
 -- }}}
 
