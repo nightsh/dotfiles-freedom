@@ -1,13 +1,19 @@
 -- Standard awesome library
-require("awful")
+local gears = require("gears")
+local awful = require("awful")
+awful.rules = require("awful.rules")
 require("awful.autofocus")
-require("awful.rules")
+-- Widget and layout library
+local wibox = require("wibox")
 -- Theme handling library
-require("beautiful")
+local beautiful = require("beautiful")
 -- Notification library
-require("naughty")
+local naughty = require("naughty")
+local menubar = require("menubar")
+local vicious = require("vicious")
 
-require("vicious")
+-- Load Debian menu entries
+local debian = require("debian.menu")
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
@@ -31,7 +37,7 @@ run_once("volti")
 --run_once("nitrogen --restore")
 --run_once("blueman-applet")
 run_once("liferea")
-run_once("conky -c /home/victor/backup/conky/1/.conkyrc")
+--run_once("conky -c /home/victor/backup/conky/1/.conkyrc")
 run_once("numlockx on")
 run_once("xset b off")
 run_once("xfce4-power-manager")
@@ -121,27 +127,28 @@ myawesomemenu = {
 }
 
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+                                    { "Debian", debian.Debian_menu.Debian },
                                     { "open terminal", terminal }
                                   }
                         })
 
-mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
+mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
                                      menu = mymainmenu })
 -- }}}
 
 -- {{{ Wibox
 
-spacer = widget({type = "textbox"})
-separator = widget({type = "textbox"})
-spacer.text = " "
-separator.text = "❄"
+spacer = wibox.widget.textbox(' ')
+separator = wibox.widget.textbox('❄')
+--spacer.text = " "
+--separator.text = "❄"
 
 
 -- {{{ Battery state
 
 -- Initialize widget
-batwidget = widget({ type = "textbox" })
---baticon = widget({ type = "imagebox" })
+batwidget = wibox.widget.textbox()
+--baticon = wibox.widget({ type = "imagebox" })
 --batwidget = awful.widget.progressbar()
 --batwidget:set_width(15)
 --batwidget:set_height(20)
@@ -175,7 +182,8 @@ memwidget:set_height(20)
 memwidget:set_vertical(true)
 memwidget:set_background_color('#494B4F')
 memwidget:set_color('#AECF96')
-memwidget:set_gradient_colors({ '#AECF96', '#88A175', '#FF5656' })
+memwidget:set_color({ type = "linear", from = { 0, 0 }, to = { 0, 20 },
+            stops = {{ 0, '#AECF96' }, { 0.5, '#88A175' }, { 1, '#FF5656' } }})
 
 -- RAM usage tooltip
 memwidget_t = awful.tooltip({ objects = { memwidget.widget },})
@@ -194,7 +202,8 @@ netwidget:set_width(50)
 netwidget:set_height(20)
 netwidget:set_background_color("#494B4F")
 netwidget:set_color("#FF5656")
-netwidget:set_gradient_colors({ "#FF5656", "#88A175", "#AECF96" })
+netwidget:set_color({ type = "linear", from = { 0, 0 }, to = { 0, 20 },
+            stops = {{ 0, '#FF5656' }, { 0.5, '#88A175' }, { 1, '#AECF96' } }})
 
 netwidget_t = awful.tooltip({ objects = { netwidget.widget },})
 
@@ -206,7 +215,7 @@ vicious.register(netwidget, vicious.widgets.net,
                     end)
 
 -- Weather widget
-weatherwidget = widget({ type = "textbox" })
+weatherwidget = wibox.widget.textbox()
 weather_t = awful.tooltip({ objects = { weatherwidget },})
 
 vicious.register(weatherwidget, vicious.widgets.weather, 
@@ -221,7 +230,8 @@ cpuwidget:set_width(50)
 cpuwidget:set_height(20)
 cpuwidget:set_background_color("#494B4F")
 cpuwidget:set_color("#FF5656")
-cpuwidget:set_gradient_colors({ "#FF5656", "#88A175", "#AECF96" })
+cpuwidget:set_color({ type = "linear", from = { 0, 0 }, to = { 0, 20 },
+            stops = {{ 0, '#FF5656' }, { 0.5, '#88A175' }, { 1, '#AECF96' } }})
 
 cpuwidget_t = awful.tooltip({ objects = { cpuwidget.widget },})
 
@@ -233,8 +243,8 @@ vicious.register(cpuwidget, vicious.widgets.cpu,
                     end)
 
 -- Disk usage widget
-diskwidget = widget({ type = 'imagebox' })
-diskwidget.image = image("/home/victor/.config/awesome/du.png")
+diskwidget = wibox.widget.imagebox()
+diskwidget:set_image("/home/victor/.config/awesome/du.png")
 disk = require("diskusage")
 -- the first argument is the widget to trigger the diskusage
 -- the second/third is the percentage at which a line gets orange/red
@@ -247,7 +257,7 @@ disk.addToWidget(diskwidget, 75, 90, false)
 --volumecfg = {}
 --volumecfg.cardid  = 0
 --volumecfg.channel = "Master"
---volumecfg.widget = widget({ type = "textbox", name = "volumecfg.widget", align = "right" })
+--volumecfg.widget = wibox.widget({ type = "textbox", name = "volumecfg.widget", align = "right" })
 
 --volumecfg_t = awful.tooltip({ objects = { volumecfg.widget },})
 --volumecfg_t:set_text("Volume")
@@ -297,13 +307,13 @@ require('calendar2')
 calendar2.addCalendarToWidget(mytextclock)
 
 -- Caps Lock widget
-capslockwidget = widget({ type = "textbox" })
+capslockwidget = wibox.widget.textbox()
     lock = io.popen("~/scripts/caps_lock.sh")
     capslockwidget.text = lock:read("*a")
     lock:close()
 
 -- Create a systray
-mysystray = widget({ type = "systray" })
+mysystray = wibox.widget.systray()
 
 -- Create a wibox for each screen and add it
 mywibox = {}
@@ -346,7 +356,7 @@ mytasklist.buttons = awful.util.table.join(
 
 for s = 1, screen.count() do
     -- Create a promptbox for each screen
-    mypromptbox[s] = awful.widget.prompt({ layout = awful.widget.layout.horizontal.leftright })
+    mypromptbox[s] = awful.widget.prompt()
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
     mylayoutbox[s] = awful.widget.layoutbox(s)
@@ -356,75 +366,56 @@ for s = 1, screen.count() do
                            awful.button({ }, 4, function () awful.layout.inc(layouts, 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(layouts, -1) end)))
     -- Create a taglist widget
-    mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.label.all, mytaglist.buttons)
+    mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.filter.all, mytaglist.buttons)
 
     -- Create a tasklist widget
-    mytasklist[s] = awful.widget.tasklist(function(c)
-                                              return awful.widget.tasklist.label.currenttags(c, s)
-                                          end, mytasklist.buttons)
+    mytasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, mytasklist.buttons)
 
     -- Create the wibox
     mywibox[s] = awful.wibox({ position = "top", ontop = false, height = 20, screen = s })
     -- Add widgets to the wibox - order matters
-    mywibox[s].widgets = {
-        {
-            --mylauncher,
-            mytaglist[s],
-            mypromptbox[s],
-            spacer,
-            spacer,
-            layout = awful.widget.layout.horizontal.leftright
-        },
-        mylayoutbox[s],
 
-        mytextclock,
-        separator,
-        spacer,
+    -- Widgets that are aligned to the left
+    local left_layout = wibox.layout.fixed.horizontal()
+    left_layout:add(mylauncher)
+    left_layout:add(mytaglist[s])
+    left_layout:add(mypromptbox[s])
 
-        batwidget,
-        spacer,
-        separator,
-        spacer,
+    -- Widgets that are aligned to the right
+    local right_layout = wibox.layout.fixed.horizontal()
+    if s == 1 then right_layout:add(wibox.widget.systray()) end
+    right_layout:add(mytextclock)
+    right_layout:add(separator)
+    right_layout:add(spacer)
+    right_layout:add(batwidget)
+    right_layout:add(spacer)
+    right_layout:add(separator)
+    right_layout:add(spacer)
+    right_layout:add(weatherwidget)
+    right_layout:add(spacer)
+    right_layout:add(separator)
+    right_layout:add(spacer)
+    right_layout:add(cpuwidget)
+    right_layout:add(spacer)
+    right_layout:add(separator)
+    right_layout:add(spacer)
+    right_layout:add(capslockwidget)
+    right_layout:add(spacer)
+    right_layout:add(separator)
+    right_layout:add(spacer)
+    right_layout:add(memwidget)
+    right_layout:add(spacer)
+    right_layout:add(separator)
+    right_layout:add(spacer)
+    right_layout:add(mylayoutbox[s])
 
-        --volumecfg.widget,
-        --spacer,
-        --separator,
-        --spacer,
+    -- Now bring it all together (with the tasklist in the middle)
+    local layout = wibox.layout.align.horizontal()
+    layout:set_left(left_layout)
+    layout:set_middle(mytasklist[s])
+    layout:set_right(right_layout)
 
-        weatherwidget,
-        spacer,
-        separator,
-        spacer,
-
---        netwidget.widget,
---       spacer,
---        separator,
---        spacer,
-
-        cpuwidget.widget,
-        spacer,
-        separator,
-        spacer,
-
-        capslockwidget,
-        spacer,
-        separator,
-        spacer,
-
-        memwidget.widget,
-        spacer,
-        separator,
-        spacer,
-
---        diskwidget,
---        spacer,
---        separator,
---        spacer,
-
-        s == 1 and mysystray or nil,
-        mytasklist[s],
-        layout = awful.widget.layout.horizontal.rightleft
-    }
+    mywibox[s]:set_widget(layout)
 end
 -- }}}
 
@@ -600,13 +591,13 @@ for i = 1, keynumber do
         awful.key({ }, "Num_Lock",
                 function ()
                     lock = io.popen("~/scripts/caps_lock.sh")
-                    capslockwidget.text = lock:read("*a")
+                    capslockwidget:set_text(lock:read("*a"))
                     lock:close()
                 end),
         awful.key({ }, "Caps_Lock",
                 function ()
                     lock = io.popen("~/scripts/caps_lock.sh")
-                    capslockwidget.text = lock:read("*a")
+                    capslockwidget:set_text(lock:read("*a"))
                     lock:close()
                 end),
         --awful.key({ }, "XF86AudioRaiseVolume", function () volumecfg.up() end),
