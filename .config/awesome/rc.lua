@@ -36,14 +36,14 @@ run_once("nm-applet")
 run_once("volti")
 --run_once("nitrogen --restore")
 --run_once("blueman-applet")
-run_once("liferea")
---run_once("conky -c /home/victor/backup/conky/1/.conkyrc")
+--run_once("liferea")
+run_once("conky -c /home/victor/backup/conky/1/.conkyrc")
 run_once("numlockx on")
 run_once("xset b off")
 run_once("xfce4-power-manager")
 run_once("synapse")
 --run_once("parcellite")
-run_once("zim")
+--run_once("zim")
 run_once("/home/victor/scripts/keymap.sh")
 --- }}}
 
@@ -186,7 +186,7 @@ memwidget:set_color({ type = "linear", from = { 0, 0 }, to = { 0, 20 },
             stops = {{ 0, '#AECF96' }, { 0.5, '#88A175' }, { 1, '#FF5656' } }})
 
 -- RAM usage tooltip
-memwidget_t = awful.tooltip({ objects = { memwidget.widget },})
+memwidget_t = awful.tooltip({ objects = { memwidget },})
 
 vicious.cache(vicious.widgets.mem)
 vicious.register(memwidget, vicious.widgets.mem, 
@@ -233,7 +233,7 @@ cpuwidget:set_color("#FF5656")
 cpuwidget:set_color({ type = "linear", from = { 0, 0 }, to = { 0, 20 },
             stops = {{ 0, '#FF5656' }, { 0.5, '#88A175' }, { 1, '#AECF96' } }})
 
-cpuwidget_t = awful.tooltip({ objects = { cpuwidget.widget },})
+cpuwidget_t = awful.tooltip({ objects = { cpuwidget },})
 
 -- Register CPU widget
 vicious.register(cpuwidget, vicious.widgets.cpu, 
@@ -249,7 +249,7 @@ disk = require("diskusage")
 -- the first argument is the widget to trigger the diskusage
 -- the second/third is the percentage at which a line gets orange/red
 -- true = show only local filesystems
-disk.addToWidget(diskwidget, 75, 90, false)
+disk.addToWidget(diskwidget, 75, 90, true)
 
 
 -- Volume widget
@@ -300,16 +300,16 @@ disk.addToWidget(diskwidget, 75, 90, false)
 --volumecfg.update()
 
 -- Create a textclock widget
-mytextclock = awful.widget.textclock({ align = "right" })
+mytextclock = awful.widget.textclock(" %a %b %d, %H:%M:%S ", 1)
 
 -- Calendar widget to attach to the textclock
-require('calendar2')
-calendar2.addCalendarToWidget(mytextclock)
+local calendar = require('calendar2')
+calendar.addCalendarToWidget(mytextclock)
 
 -- Caps Lock widget
 capslockwidget = wibox.widget.textbox()
     lock = io.popen("~/scripts/caps_lock.sh")
-    capslockwidget.text = lock:read("*a")
+    capslockwidget:set_text(lock:read("*a"))
     lock:close()
 
 -- Create a systray
@@ -384,17 +384,8 @@ for s = 1, screen.count() do
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then right_layout:add(wibox.widget.systray()) end
-    right_layout:add(mytextclock)
-    right_layout:add(separator)
-    right_layout:add(spacer)
-    right_layout:add(batwidget)
     right_layout:add(spacer)
     right_layout:add(separator)
-    right_layout:add(spacer)
-    right_layout:add(weatherwidget)
-    right_layout:add(spacer)
-    right_layout:add(separator)
-    right_layout:add(spacer)
     right_layout:add(cpuwidget)
     right_layout:add(spacer)
     right_layout:add(separator)
@@ -407,6 +398,15 @@ for s = 1, screen.count() do
     right_layout:add(spacer)
     right_layout:add(separator)
     right_layout:add(spacer)
+    right_layout:add(batwidget)
+    right_layout:add(spacer)
+    right_layout:add(separator)
+    right_layout:add(spacer)
+    right_layout:add(weatherwidget)
+    right_layout:add(spacer)
+    right_layout:add(separator)
+    right_layout:add(spacer)
+    right_layout:add(mytextclock)
     right_layout:add(mylayoutbox[s])
 
     -- Now bring it all together (with the tasklist in the middle)
@@ -621,18 +621,26 @@ root.keys(globalkeys)
 -- {{{ Rules
 awful.rules.rules = {
     -- All clients will match this rule.
-    { rule = { },
+    { rule = { }, except = { name = "x-caja-desktop" },
       properties = { border_width = beautiful.border_width,
                      border_color = beautiful.border_normal,
                      focus = true,
                      keys = clientkeys,
                      buttons = clientbuttons } },
-    { rule = { class    = "Conky"       }, callback = function(c) c:tags({ tags[1][1], tags[1][2], tags[1][3], 
-                                                                tags[1][4], tags[1][5], tags[1][6], tags[1][7], tags[1][8], tags[1][9]}) end},
+    --{ rule = { class    = "Conky"       }, callback = function(c) c:tags({ tags[1][1], tags[1][2], tags[1][3], 
+                                                                --tags[1][4], tags[1][5], tags[1][6], tags[1][7], tags[1][8], tags[1][9]}) end},
+    --{ rule = { name     = "x-caja-desktop"}, callback = function(c) c:tags({ tags[1][1], tags[1][2], tags[1][3], 
+                                                                --tags[1][4], tags[1][5], tags[1][6], tags[1][7], tags[1][8], tags[1][9]}) end},
+    { rule = { name = "x-caja-desktop"  },
+      properties = { border_width = 0,
+                     sticky = true,
+                   } },
+    { rule = { instance = "mateconf-editor" }, properties = { floating = true } },
+    { rule = { class    = "Conky"       }, properties = { sticky   = true } },
     { rule = { class    = "MPlayer"     }, properties = { floating = true } },
     { rule = { class    = "gimp"        }, properties = { floating = true } },
     { rule = { name     = "galculator"  }, properties = { floating = true } },
-    { rule = { name     = "mate-calc"  }, properties = { floating = true } },
+    { rule = { name     = "mate-calc"   }, properties = { floating = true } },
     { rule = { instance = "eog"         }, properties = {floating = true}},
     { rule = { instance = "rhythmbox"   }, properties = {floating = true}},
     { rule = { instance = "clawsker"    }, properties = {tag = tags[1][1], floating = true}},
@@ -650,17 +658,14 @@ awful.rules.rules = {
 
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
-client.add_signal("manage", function (c, startup)
-    -- Add a titlebar
-    -- awful.titlebar.add(c, { modkey = modkey })
-
+client.connect_signal("manage", function (c, startup)
     -- Enable sloppy focus
---    c:add_signal("mouse::enter", function(c)
- --       if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-  --          and awful.client.focus.filter(c) then
-   --         client.focus = c
-    --    end
-  --  end)
+    c:connect_signal("mouse::enter", function(c)
+        if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
+            and awful.client.focus.filter(c) then
+            client.focus = c
+        end
+    end)
 
     if not startup then
         -- Set the windows at the slave,
@@ -673,10 +678,55 @@ client.add_signal("manage", function (c, startup)
             awful.placement.no_offscreen(c)
         end
     end
+
+    local titlebars_enabled = false
+    if titlebars_enabled and (c.type == "normal" or c.type == "dialog") then
+        -- buttons for the titlebar
+        local buttons = awful.util.table.join(
+                awful.button({ }, 1, function()
+                    client.focus = c
+                    c:raise()
+                    awful.mouse.client.move(c)
+                end),
+                awful.button({ }, 3, function()
+                    client.focus = c
+                    c:raise()
+                    awful.mouse.client.resize(c)
+                end)
+                )
+
+        -- Widgets that are aligned to the left
+        local left_layout = wibox.layout.fixed.horizontal()
+        left_layout:add(awful.titlebar.widget.iconwidget(c))
+        left_layout:buttons(buttons)
+
+        -- Widgets that are aligned to the right
+        local right_layout = wibox.layout.fixed.horizontal()
+        right_layout:add(awful.titlebar.widget.floatingbutton(c))
+        right_layout:add(awful.titlebar.widget.maximizedbutton(c))
+        right_layout:add(awful.titlebar.widget.stickybutton(c))
+        right_layout:add(awful.titlebar.widget.ontopbutton(c))
+        right_layout:add(awful.titlebar.widget.closebutton(c))
+
+        -- The title goes in the middle
+        local middle_layout = wibox.layout.flex.horizontal()
+        local title = awful.titlebar.widget.titlewidget(c)
+        title:set_align("center")
+        middle_layout:add(title)
+        middle_layout:buttons(buttons)
+
+        -- Now bring it all together
+        local layout = wibox.layout.align.horizontal()
+        layout:set_left(left_layout)
+        layout:set_right(right_layout)
+        layout:set_middle(middle_layout)
+
+        awful.titlebar(c):set_widget(layout)
+    end
 end)
 
-client.add_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
 -- Autostart applications
