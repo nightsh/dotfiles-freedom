@@ -32,9 +32,9 @@ end
 --- {{{ Autostart programs, modify this to suit your needs
 run_once("xfsettingsd")
 --run_once("cairo-compmgr")
-run_once("nm-applet")
+run_once("wicd")
 run_once("volti")
---run_once("nitrogen --restore")
+run_once("nitrogen --restore")
 --run_once("blueman-applet")
 --run_once("liferea")
 run_once("conky -c /home/victor/backup/conky/1/.conkyrc")
@@ -45,6 +45,7 @@ run_once("synapse")
 --run_once("parcellite")
 --run_once("zim")
 run_once("/home/victor/scripts/keymap.sh")
+run_once("/usr/bin/owncloud")
 --- }}}
 
 -- This is used later as the default terminal and editor to run.
@@ -87,8 +88,10 @@ settings = {
     { names  = { "[✉]", " \\2 ", " \\3 ", " \\4 ", " \\5 ", " \\6", " \\7 ", " \\8 ", " 9⎞" },
       layout = { layouts[2], layouts[10], layouts[10], layouts[4], layouts[4], layouts[3], layouts[1], layouts[12], layouts[12] }
     },
+    --{  names = { "1", "2", "3", "4", "5" },
+      --layout = { layouts[2], layouts[2], layouts[10], layouts[10], layouts[1] }
     {  names = { "1-Sys", "2-Web", "3-Float", "4-Sys", "5-IRC", "6-Music", "7-Media", "8-Sys", "9-SSH" },
-      layout = { layouts[7], layouts[2], layouts[1], layouts[4], layouts[4], layouts[2], layouts[4], layouts[12], layouts[4] }
+      layout = { layouts[1], layouts[2], layouts[1], layouts[4], layouts[4], layouts[2], layouts[4], layouts[12], layouts[4] }
 }}}
 
 for s = 1, screen.count() do
@@ -303,8 +306,8 @@ disk.addToWidget(diskwidget, 75, 90, true)
 mytextclock = awful.widget.textclock(" %a %b %d, %H:%M:%S ", 1)
 
 -- Calendar widget to attach to the textclock
-local calendar = require('calendar2')
-calendar.addCalendarToWidget(mytextclock)
+local calendar = require('cal')
+calendar.register(mytextclock)
 
 -- Caps Lock widget
 capslockwidget = wibox.widget.textbox()
@@ -345,11 +348,11 @@ mytasklist.buttons = awful.util.table.join(
                                                   instance = awful.menu.clients({ width=250 })
                                               end
                                           end),
-                     awful.button({ }, 4, function ()
+                     awful.button({ }, 5, function ()
                                               awful.client.focus.byidx(1)
                                               if client.focus then client.focus:raise() end
                                           end),
-                     awful.button({ }, 5, function ()
+                     awful.button({ }, 4, function ()
                                               awful.client.focus.byidx(-1)
                                               if client.focus then client.focus:raise() end
                                           end))
@@ -419,7 +422,7 @@ for s = 1, screen.count() do
 end
 -- }}}
 
---mystatusbar = awful.wibox({ position = "bottom", screen = 1, ontop = false, width = 1, height = 10 })
+mystatusbar = awful.wibox({ position = "bottom", screen = 1, ontop = false, width = 1, height = 10 })
 
 -- {{{ Mouse bindings
 root.buttons(awful.util.table.join(
@@ -473,8 +476,9 @@ globalkeys = awful.util.table.join(
     -- Standard program
     awful.key({ modkey },            "#148", function () awful.util.spawn("screenruler") end),
     awful.key({ },                   "#148", function () awful.util.spawn("mate-calc") end),
+    awful.key({ modkey },            "#148", function () awful.util.spawn("xchat") end),
     awful.key({ },                   "#220", function () awful.util.spawn("cheese") end),
-    awful.key({ },                   "#225", function () awful.util.spawn("luakit") end),
+    awful.key({ },                   "#225", function () awful.util.spawn("dwb") end),
     awful.key({ modkey,           }, "#225", function () awful.util.spawn("chromium") end),
     awful.key({         "Shift"   }, "#225", function () awful.util.spawn("iceweasel") end),
     awful.key({ modkey,           }, "#235", function () awful.util.spawn("arandr") end),
@@ -488,6 +492,7 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "p",  function () awful.util.spawn("dmenu_run -b") end),
     awful.key({ modkey, "Control" }, "Return", function () awful.util.spawn("emacs") end),
     awful.key({ modkey, "Shift"   }, "Return", function () awful.util.spawn("gvim") end),
+    awful.key({ modkey, "Shift"   }, "n",    function () awful.util.spawn("wicd-gtk") end),
     awful.key({ modkey, "Control" }, "r", awesome.restart),
     awful.key({ modkey, "Shift"   }, "q", awesome.quit),
 
@@ -650,7 +655,8 @@ awful.rules.rules = {
     { rule = { instance = "pidgin"      }, properties = {tag = tags[1][6]}},
     { rule = { instance = "gvim"        }, properties = {tag = tags[1][2]}},
     { rule = { instance = "nitrogen"    }, properties = {floating = true}},
-    { rule = { instance = "dwb"         }, properties = {floating = true}},
+    { rule = { instance = "wicd-client.py"}, properties = {floating = true}},
+    --{ rule = { instance = "dwb"         }, properties = {floating = true}},
     { rule = { instance = "terra"       }, properties = {floating = true}},
     { rule = { class    = "Pidgin"      }, properties = {tag = tags[1][6]}},
     { rule = { instance = "zim"         }, properties = {tag = tags[1][9]}}
@@ -661,12 +667,12 @@ awful.rules.rules = {
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function (c, startup)
     -- Enable sloppy focus
-    c:connect_signal("mouse::enter", function(c)
-        if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-            and awful.client.focus.filter(c) then
-            client.focus = c
-        end
-    end)
+    --c:connect_signal("mouse::enter", function(c)
+        --if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
+            --and awful.client.focus.filter(c) then
+            --client.focus = c
+        --end
+    --end)
 
     if not startup then
         -- Set the windows at the slave,

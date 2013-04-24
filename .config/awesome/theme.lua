@@ -6,8 +6,9 @@ theme = {}
 
 theme.font          = "sans 10"
 
-theme.bg_normal     = "#222222"
-theme.bg_focus      = "#535d6c"
+--theme.bg_normal     = "#222222"
+theme.bg_normal     = "#000000"
+theme.bg_focus      = "#003773"
 theme.bg_urgent     = "#ff0000"
 theme.bg_minimize   = "#444444"
 
@@ -96,7 +97,8 @@ theme.layout_tiletop = "/usr/share/awesome/themes/default/layouts/tiletopw.png"
 theme.layout_spiral  = "/usr/share/awesome/themes/default/layouts/spiralw.png"
 theme.layout_dwindle = "/usr/share/awesome/themes/default/layouts/dwindlew.png"
 
-theme.awesome_icon = "/usr/share/awesome/icons/awesome16.png"
+--theme.awesome_icon = "/usr/share/awesome/icons/awesome16.png"
+theme.awesome_icon = "/usr/share/pixmaps/debian-logo.png"
 --theme.awesome_icon = "/home/username/.config/awesome/arch.png"
 
 return theme
