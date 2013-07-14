@@ -30,22 +30,24 @@ function run_once(cmd)
 end
 
 --- {{{ Autostart programs, modify this to suit your needs
-run_once("xfsettingsd")
+run_once("gtk-redshift -l 44.43:26.09 -t 5700:4850")
+--run_once("xfsettingsd")
 --run_once("cairo-compmgr")
 run_once("wicd")
-run_once("volti")
+--run_once("volti")
+run_once("kmix")
 run_once("nitrogen --restore")
 --run_once("blueman-applet")
---run_once("liferea")
-run_once("conky -c /home/victor/backup/conky/1/.conkyrc")
+run_once("kontact")
+--run_once("conky -c /home/victor/backup/conky/1/.conkyrc")
 run_once("numlockx on")
 run_once("xset b off")
-run_once("xfce4-power-manager")
-run_once("synapse")
+--run_once("xfce4-power-manager")
+run_once("kupfer")
 --run_once("parcellite")
 --run_once("zim")
 run_once("/home/victor/scripts/keymap.sh")
-run_once("/usr/bin/owncloud")
+--run_once("/usr/bin/owncloud")
 --- }}}
 
 -- This is used later as the default terminal and editor to run.
@@ -90,8 +92,10 @@ settings = {
     },
     --{  names = { "1", "2", "3", "4", "5" },
       --layout = { layouts[2], layouts[2], layouts[10], layouts[10], layouts[1] }
-    {  names = { "1-Sys", "2-Web", "3-Float", "4-Sys", "5-IRC", "6-Music", "7-Media", "8-Sys", "9-SSH" },
-      layout = { layouts[1], layouts[2], layouts[1], layouts[4], layouts[4], layouts[2], layouts[4], layouts[12], layouts[4] }
+    --{  names = { "1-Sys", "2-Web", "3-Float", "4-Sys", "5-IRC", "6-Music", "7-Media", "8-Sys", "9-SSH" },
+      --layout = { layouts[1], layouts[2], layouts[1], layouts[4], layouts[4], layouts[2], layouts[4], layouts[12], layouts[4] }
+    {  names = { "Full", "HS", "VS" },
+      layout = { layouts[2], layouts[4], layouts[2] }
 }}}
 
 for s = 1, screen.count() do
@@ -422,7 +426,7 @@ for s = 1, screen.count() do
 end
 -- }}}
 
-mystatusbar = awful.wibox({ position = "bottom", screen = 1, ontop = false, width = 1, height = 10 })
+--mystatusbar = awful.wibox({ position = "bottom", screen = 1, ontop = false, width = 1, height = 10 })
 
 -- {{{ Mouse bindings
 root.buttons(awful.util.table.join(
@@ -476,7 +480,7 @@ globalkeys = awful.util.table.join(
     -- Standard program
     awful.key({ modkey },            "#148", function () awful.util.spawn("screenruler") end),
     awful.key({ },                   "#148", function () awful.util.spawn("mate-calc") end),
-    awful.key({ modkey },            "#148", function () awful.util.spawn("xchat") end),
+    awful.key({ "Control" },         "#148", function () awful.util.spawn("xchat") end),
     awful.key({ },                   "#220", function () awful.util.spawn("cheese") end),
     awful.key({ },                   "#225", function () awful.util.spawn("dwb") end),
     awful.key({ modkey,           }, "#225", function () awful.util.spawn("chromium") end),
@@ -484,9 +488,9 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "#235", function () awful.util.spawn("arandr") end),
     awful.key({ modkey,           }, "#165", function () awful.util.spawn("claws-mail") end),
     awful.key({         "Shift"   }, "#165", function () awful.util.spawn("pcmanfm") end),
-    awful.key({ },                   "#165", function () awful.util.spawn("caja --no-desktop") end),
+    awful.key({ },                   "#165", function () awful.util.spawn("dolphin") end),
     awful.key({ "Control"         }, "Print", function () awful.util.spawn("lxterminal") end),
-    awful.key({ modkey,           }, "Print", function () awful.util.spawn("xfce4-screenshooter") end),
+    awful.key({ },                   "Print", function () awful.util.spawn("xfce4-screenshooter") end),
     awful.key({ modkey,           }, "Delete", function () awful.util.spawn("i3lock -i /home/victor/Pictures/asciideb.png") end),
     awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
     awful.key({ modkey,           }, "p",  function () awful.util.spawn("dmenu_run -b") end),
@@ -644,6 +648,11 @@ awful.rules.rules = {
     { rule = { instance = "mate-control-center" }, properties = { floating = true } },
     { rule = { class    = "Conky"       }, properties = { sticky   = true, ontop = true } },
     { rule = { class    = "MPlayer"     }, properties = { floating = true } },
+    --{ rule = { class    = "plasma-desktop"     }, properties = { sticky = true, ontop = false, focusable = false, below = true} },
+    --{ rule = { name     = "plasma-desktop"     }, properties = { sticky = true, ontop = false, hidden=true, border_width = 0 } },
+    --{ rule = { class    = "plasma-desktop"     }, properties = { floating = true, border_width = 0 } },
+    { rule = { class    = "Plasma"      }, properties = { sticky = true, border_width = 0 } },
+    { rule = { type     = "desktop"     }, callback = awful.client.unmanage },
     { rule = { class    = "gimp"        }, properties = { floating = true } },
     { rule = { name     = "galculator"  }, properties = { floating = true } },
     { rule = { name     = "mate-calc"   }, properties = { floating = true } },
@@ -651,6 +660,8 @@ awful.rules.rules = {
     { rule = { instance = "rhythmbox"   }, properties = {floating = true}},
     { rule = { instance = "clawsker"    }, properties = {tag = tags[1][1], floating = true}},
     { rule = { instance = "claws-mail"  }, properties = {tag = tags[1][1]}},
+    { rule = { instance = "kontact"     }, properties = {tag = tags[1][1]}},
+    { rule = { instance = "kdepim"      }, properties = {tag = tags[1][1]}},
     { rule = { instance = "screenruler" }, properties = {floating = true}},
     { rule = { instance = "pidgin"      }, properties = {tag = tags[1][6]}},
     { rule = { instance = "gvim"        }, properties = {tag = tags[1][2]}},
